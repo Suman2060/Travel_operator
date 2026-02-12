@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { MapPin, Clock, Calendar, Users, ChevronRight, Star } from 'lucide-react';
-import { formatUSD, formatNPR } from '../lib/currency';
+import { formatNPR } from '../lib/currency';
 import api, { getImageUrl } from '../lib/api';
+import { useAuth } from '../context/AuthContext';
 
 const PackageDetail = () => {
     const { id } = useParams();
+    const { user } = useAuth();
     const [packageData, setPackageData] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -94,7 +96,10 @@ const PackageDetail = () => {
                             <div>
                                 <span className="text-sm text-gray-600 uppercase tracking-wider font-bold">Starting from</span>
                                 <div className="text-3xl font-black text-gray-900 mt-1">{formatNPR(packageData.price)}</div>
-                                <span className="text-xs text-gray-600 italic block">({formatUSD(packageData.price)}) per person</span>
+                                <div className="flex items-baseline gap-2 mt-1">
+                                    <span className="text-xs text-gray-600 italic">per person</span>
+                                    <span className="text-xs text-gray-500">(${(packageData.price / 133).toFixed(2)} USD)</span>
+                                </div>
                             </div>
                         </div>
 
@@ -110,15 +115,6 @@ const PackageDetail = () => {
                             </div>
                         </div>
 
-                        <Link
-                            to={`/booking?package=${packageData.id}`}
-                            className="block w-full bg-blue-600 text-white text-center py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition-all transform hover:-translate-y-1 shadow-lg"
-                        >
-                            Book This Journey
-                        </Link>
-
-                        <p className="text-center text-gray-600 text-xs mt-4">No payment required until you arrive</p>
-
                         <div className="mt-8 pt-6 border-t border-gray-100">
                             <h4 className="font-bold text-gray-900 mb-3 text-sm uppercase tracking-wider">Certified Guide</h4>
                             <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
@@ -131,6 +127,24 @@ const PackageDetail = () => {
                                 </div>
                             </div>
                         </div>
+
+                        {user?.role === 'guide' ? (
+                            <div className="mt-6 bg-yellow-50 border border-yellow-200 p-4 rounded-xl text-center">
+                                <p className="text-yellow-800 text-sm font-bold">Guide Account Detected</p>
+                                <p className="text-yellow-700 text-xs mt-1">
+                                    Guides cannot book trips. Please use a traveler account to make a booking.
+                                </p>
+                            </div>
+                        ) : (
+                            <Link
+                                to={`/booking?package=${packageData.id}`}
+                                className="block w-full bg-blue-600 text-white text-center py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition-all transform hover:-translate-y-1 shadow-lg mt-8"
+                            >
+                                Book This Journey
+                            </Link>
+                        )}
+
+                        <p className="text-center text-gray-600 text-xs mt-4">No payment required until you arrive</p>
                     </div>
                 </div>
 

@@ -20,6 +20,18 @@ class PackageViewSet(viewsets.ModelViewSet):
     serializer_class = PackageSerializer
     permission_classes = [IsGuideOrReadOnly]
 
+    def get_queryset(self):
+        queryset = Package.objects.all().order_by('-created_at')
+        location = self.request.query_params.get('location', None)
+        days = self.request.query_params.get('days', None)
+
+        if location:
+            queryset = queryset.filter(location__icontains=location)
+        if days:
+            queryset = queryset.filter(duration__icontains=days)
+            
+        return queryset
+
     def perform_create(self, serializer):
         serializer.save(guide=self.request.user)
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Lock, Mail, UserPlus, MapPin } from 'lucide-react';
+import { User, Lock, Mail, UserPlus, MapPin, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -8,17 +8,39 @@ const SignUp = () => {
         username: '',
         email: '',
         password: '',
+        phone_number: '',
         role: 'traveler'
     });
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const { register } = useAuth();
     const navigate = useNavigate();
 
+    const validateForm = () => {
+        if (!formData.username.trim() || !formData.email.trim() || !formData.password.trim()) {
+            setError('Please fill in all required fields');
+            return false;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setError('Please enter a valid email address');
+            return false;
+        }
+        if (formData.password.length < 6) {
+            setError('Password must be at least 6 characters long');
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (!validateForm()) return;
+
         setLoading(true);
         try {
             await register(formData);
@@ -101,19 +123,42 @@ const SignUp = () => {
                     </div>
 
                     <div>
+                        <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-widest">Phone Number</label>
+                        <div className="relative">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <MapPin size={18} />
+                            </span>
+                            <input
+                                type="tel"
+                                value={formData.phone_number}
+                                onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
+                                className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 outline-none focus:border-blue-600 font-medium shadow-sm"
+                                placeholder="+977 9800000000"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
                         <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-widest">Password</label>
                         <div className="relative">
                             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                 <Lock size={18} />
                             </span>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 value={formData.password}
                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 outline-none focus:border-blue-600 font-medium shadow-sm"
+                                className="w-full pl-12 pr-12 py-3 rounded-lg border border-gray-200 outline-none focus:border-blue-600 font-medium shadow-sm"
                                 placeholder="Min. 8 characters"
                                 required
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
                         </div>
                     </div>
 

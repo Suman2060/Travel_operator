@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { User, Lock, LogIn } from 'lucide-react';
+import { User, Lock, LogIn, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -15,6 +16,12 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (!username.trim() || !password.trim()) {
+            setError('Please fill in all fields');
+            return;
+        }
+
         setLoading(true);
         try {
             await login(username, password);
@@ -65,13 +72,20 @@ const Login = () => {
                                 <Lock size={18} />
                             </span>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 outline-none focus:border-blue-600 font-medium"
+                                className="w-full pl-12 pr-12 py-3 rounded-lg border border-gray-200 outline-none focus:border-blue-600 font-medium"
                                 placeholder="••••••••"
                                 required
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
                         </div>
                     </div>
 

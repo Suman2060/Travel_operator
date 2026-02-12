@@ -214,7 +214,7 @@ const EditPackage = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div>
                                     <label className="block text-xs font-black text-gray-600/40 mb-3 uppercase tracking-widest flex items-center gap-2">
-                                        <DollarSign size={12} /> Base Price (USD)
+                                        <DollarSign size={12} /> Base Price (NPR)
                                     </label>
                                     <input
                                         type="number"

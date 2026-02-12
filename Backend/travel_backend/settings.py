@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-6xhr1_d=e^1zgf0fe)=^x7*+hi4si%1rq+ah^&xt30wrftj+c1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'users',
     'packages',
     'bookings',
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -169,3 +170,42 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5174",
     "http://localhost:5175",
 ]
+
+# Email Configuration
+# For development, you can use console backend to see emails in terminal
+# For production, use SMTP backend with real email credentials
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
+
+# ============================================
+# EMAIL CONFIGURATION
+# ============================================
+# For DEMO: Uncomment SMTP Backend and add your credentials below
+# For TESTING: Use Console Backend (emails print to terminal)
+
+# Option 1: Console Backend (for development/testing)
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Option 2: SMTP Backend (for real email sending - CURRENTLY ACTIVE)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# TODO: Replace these with your actual Gmail credentials
+EMAIL_HOST_USER = 'sumandangol2060@gmail.com'
+EMAIL_HOST_PASSWORD = 'wwcyfkppyajyqeor'  # App Password (spaces removed)
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

@@ -162,11 +162,11 @@ const CreatePackage = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-xs font-black text-gray-600/60 mb-2 uppercase tracking-widest">Price in USD (Converts to Nepali Rs.)</label>
+                                    <label className="block text-xs font-black text-gray-600/60 mb-2 uppercase tracking-widest">Price in NPR</label>
                                     <input
                                         type="number"
                                         className="w-full p-3 rounded-lg border border-gray-200 focus:border-blue-600 outline-none font-bold text-gray-900"
-                                        placeholder="500"
+                                        placeholder="5000"
                                         value={formData.price}
                                         onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                                         required

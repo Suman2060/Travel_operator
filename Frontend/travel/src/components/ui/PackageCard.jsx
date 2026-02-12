@@ -1,6 +1,6 @@
 import { MapPin, Star, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { formatUSD, formatNPR } from '../../lib/currency';
+import { formatNPR } from '../../lib/currency';
 import { getImageUrl } from '../../lib/api';
 
 const PackageCard = ({ packageData }) => {
@@ -10,7 +10,7 @@ const PackageCard = ({ packageData }) => {
         <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow">
             <div className="relative h-48">
                 <img
-                    src={getImageUrl(image) || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}
+                    src={getImageUrl(image) || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}
                     alt={title}
                     className="w-full h-full object-cover"
                 />
@@ -33,9 +33,11 @@ const PackageCard = ({ packageData }) => {
 
                 <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
                     <div>
-                        <span className="text-xs text-gray-500 block">Price from</span>
-                        <span className="text-xl font-black text-blue-600">{formatNPR(price || 0)}</span>
-                        <span className="text-[10px] text-gray-400 block font-medium">approx. {formatUSD(price || 0)}</span>
+                        <span className="text-xs text-gray-500 block">Price per person</span>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-xl font-black text-blue-600">{formatNPR(price || 0)}</span>
+                            <span className="text-xs text-gray-500">(${((price || 0) / 133).toFixed(2)})</span>
+                        </div>
                     </div>
 
                     <Link

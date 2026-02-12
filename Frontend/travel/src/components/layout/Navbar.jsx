@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, User, LogOut, Compass } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import NotificationBell from '../NotificationBell';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -39,12 +40,16 @@ const Navbar = () => {
                 {/* Desktop Links */}
                 <div className="hidden md:flex items-center gap-8">
                     <Link to="/" className={`font-semibold hover:text-blue-600 transition-colors ${isScrolled ? 'text-gray-600' : 'text-white/80'}`}>Home</Link>
+                    <Link to="/packages" className={`font-semibold hover:text-blue-600 transition-colors ${isScrolled ? 'text-gray-600' : 'text-white/80'}`}>Packages</Link>
 
                     {user ? (
                         <div className="flex items-center gap-6">
-                            {user.role === 'guide' && (
+                            {user.role === 'guide' ? (
                                 <Link to="/guide" className={`font-semibold hover:text-blue-600 transition-colors ${isScrolled ? 'text-gray-600' : 'text-white/80'}`}>Guide Dashboard</Link>
+                            ) : (
+                                <Link to="/my-bookings" className={`font-semibold hover:text-blue-600 transition-colors ${isScrolled ? 'text-gray-600' : 'text-white/80'}`}>My Bookings</Link>
                             )}
+                            <NotificationBell />
                             <div className={`flex items-center gap-2 px-4 py-2 rounded-full border ${isScrolled ? 'border-gray-200 text-gray-900' : 'border-white/20 text-white'}`}>
                                 <User size={18} />
                                 <span className="font-bold">{user.username}</span>
@@ -74,6 +79,7 @@ const Navbar = () => {
             {mobileMenuOpen && (
                 <div className="md:hidden bg-white border-t border-gray-100 absolute top-full left-0 right-0 p-6 flex flex-col gap-4 shadow-xl">
                     <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-lg font-bold text-gray-900 border-b border-gray-50 pb-2">Home</Link>
+                    <Link to="/packages" onClick={() => setMobileMenuOpen(false)} className="text-lg font-bold text-gray-900 border-b border-gray-50 pb-2">Packages</Link>
 
                     {user ? (
                         <>

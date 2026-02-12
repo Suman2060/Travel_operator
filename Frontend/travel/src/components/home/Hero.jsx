@@ -15,8 +15,8 @@ const Hero = ({ onSearch }) => {
             {/* Simple Background Pattern or Image */}
             <div className="absolute inset-0 opacity-40">
                 <img
-                    src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-                    alt="Hero Background"
+                    src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                    alt="Majestic Nepal Mountains"
                     className="w-full h-full object-cover"
                 />
             </div>

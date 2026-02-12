@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Users, CheckCircle, ChevronRight, AlertCircle, MapPin } from 'lucide-react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { formatUSD, formatNPR } from '../lib/currency';
+import { formatNPR } from '../lib/currency';
 import { useAuth } from '../context/AuthContext';
 import api from '../lib/api';
 
@@ -60,7 +60,13 @@ const Booking = () => {
             });
             setSuccess(true);
         } catch (err) {
-            setError(err.response?.data?.non_field_errors?.[0] || 'Booking failed. Try a different date.');
+            // Handle various error response formats
+            const errorMessage =
+                err.response?.data?.non_field_errors?.[0] ||
+                err.response?.data?.detail ||
+                (typeof err.response?.data === 'string' ? err.response.data : null) ||
+                'Booking failed. Please try a different date.';
+            setError(errorMessage);
         } finally {
             setBookingLoading(false);
         }
@@ -233,7 +239,7 @@ const Booking = () => {
                         <div className="bg-gray-50 p-6 rounded-xl text-right">
                             <div className="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-1">Total Trip Value</div>
                             <div className="text-3xl font-black text-blue-600">{formatNPR(totalUSD)}</div>
-                            <div className="text-sm font-bold text-gray-400">({formatUSD(totalUSD)})</div>
+
                         </div>
                     </aside>
                 </div>

@@ -59,6 +59,11 @@ A specialized interface for Guides.
 - **Multi-step Form**: Breaks the booking into "Trip Details", "Travelers", and "Payment".
 - **Dynamic Summary**: Calculates total price (USD and NPR) in real-time as the number of travelers changes.
 
+### **📧 Email Notification System (`email_utils.py`)**
+- **Automated Alerts**: Sends professional HTML emails to guides whenever a booking is made.
+- **Dual Backend**: Configured to switch easily between `Console` (for dev) and `SMTP` (for production/Gmail).
+- **Template Engine**: Uses a reusable HTML template that dynamically inserts Package, Traveler, and Booking details.
+
 ---
 
 ## 5. Directory Structure
