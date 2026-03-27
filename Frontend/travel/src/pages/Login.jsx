@@ -2,32 +2,43 @@ import { useState } from 'react';
 import { User, Lock, LogIn, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const loginSchema = z.object({
+    username: z.string().min(1, 'Username is required'),
+    password: z.string().min(1, 'Password is required'),
+});
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState('');
+    const [serverError, setServerError] = useState('');
     const [loading, setLoading] = useState(false);
 
     const { login } = useAuth();
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            username: '',
+            password: '',
+        },
+    });
 
-        if (!username.trim() || !password.trim()) {
-            setError('Please fill in all fields');
-            return;
-        }
-
+    const onSubmit = async (data) => {
+        setServerError('');
         setLoading(true);
         try {
-            await login(username, password);
+            await login(data.username, data.password);
             navigate('/');
         } catch (err) {
-            setError(err.response?.data?.detail || 'Invalid username or password');
+            setServerError(err.response?.data?.detail || 'Invalid username or password');
         } finally {
             setLoading(false);
         }
@@ -36,18 +47,18 @@ const Login = () => {
     return (
         <div className="bg-gray-50 min-h-screen pt-40 pb-20 px-6 flex items-start justify-center">
             <div className="bg-white p-10 rounded-xl shadow-md border border-gray-100 max-w-md w-full">
-                <div className="mb-10">
+                <div className="mb-10 text-center">
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">Member Login</h1>
                     <p className="text-gray-600 text-sm">Please enter your credentials to access your account.</p>
                 </div>
 
-                {error && (
+                {serverError && (
                     <div className="bg-red-50 text-red-500 p-4 rounded-lg mb-8 text-sm border border-red-100 font-medium">
-                        {error}
+                        {serverError}
                     </div>
                 )}
 
-                <form className="space-y-6" onSubmit={handleSubmit}>
+                <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     <div>
                         <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-widest">Username</label>
                         <div className="relative">
@@ -56,13 +67,14 @@ const Login = () => {
                             </span>
                             <input
                                 type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 outline-none focus:border-blue-600 font-medium"
+                                {...register('username')}
+                                className={`w-full pl-12 pr-4 py-3 rounded-lg border outline-none font-medium transition-all ${
+                                    errors.username ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-blue-600'
+                                }`}
                                 placeholder="Username"
-                                required
                             />
                         </div>
+                        {errors.username && <p className="mt-1 text-xs text-red-500 font-medium">{errors.username.message}</p>}
                     </div>
 
                     <div>
@@ -72,12 +84,12 @@ const Login = () => {
                                 <Lock size={18} />
                             </span>
                             <input
-                                type={showPassword ? "text" : "password"}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-12 pr-12 py-3 rounded-lg border border-gray-200 outline-none focus:border-blue-600 font-medium"
+                                type={showPassword ? 'text' : 'password'}
+                                {...register('password')}
+                                className={`w-full pl-12 pr-12 py-3 rounded-lg border outline-none font-medium transition-all ${
+                                    errors.password ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-blue-600'
+                                }`}
                                 placeholder="••••••••"
-                                required
                             />
                             <button
                                 type="button"
@@ -87,13 +99,16 @@ const Login = () => {
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
                         </div>
+                        {errors.password && <p className="mt-1 text-xs text-red-500 font-medium">{errors.password.message}</p>}
                     </div>
 
                     <button
                         disabled={loading}
                         className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-all flex items-center justify-center gap-2 disabled:opacity-70 shadow-md"
                     >
-                        {loading ? "Please wait..." : (
+                        {loading ? (
+                            'Please wait...'
+                        ) : (
                             <>
                                 <LogIn size={20} />
                                 Sign In
@@ -104,8 +119,10 @@ const Login = () => {
 
                 <div className="mt-10 pt-8 border-t border-gray-100 text-center">
                     <p className="text-sm text-gray-600">
-                        New to Chill Travel?{" "}
-                        <Link to="/signup" className="text-blue-600 font-bold hover:underline">Create an account</Link>
+                        New to Chill Travel?{' '}
+                        <Link to="/signup" className="text-blue-600 font-bold hover:underline">
+                            Create an account
+                        </Link>
                     </p>
                 </div>
             </div>

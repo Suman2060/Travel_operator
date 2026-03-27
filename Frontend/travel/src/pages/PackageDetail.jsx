@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Clock, Calendar, Users, ChevronRight, Star } from 'lucide-react';
+import { MapPin, Clock, Calendar, Users, ChevronRight, Star, Phone } from 'lucide-react';
 import { formatNPR } from '../lib/currency';
 import api, { getImageUrl } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
@@ -121,9 +121,15 @@ const PackageDetail = () => {
                                 <div className="w-10 h-10 rounded-full bg-blue-600/10 flex items-center justify-center text-blue-600">
                                     <Users size={20} />
                                 </div>
-                                <div>
+                                <div className="flex-1">
                                     <div className="font-bold text-gray-900">{packageData.guide_name || 'Expert Guide'}</div>
-                                    <div className="text-[10px] text-gray-600 font-medium uppercase">Verified Professional</div>
+                                    {packageData.guide_phone && (
+                                        <div className="text-xs text-blue-600 font-bold mt-0.5 flex items-center gap-1">
+                                            <Phone size={12} className="shrink-0" />
+                                            {packageData.guide_phone}
+                                        </div>
+                                    )}
+                                    <div className="text-[10px] text-gray-600 font-medium uppercase mt-1">Verified Professional</div>
                                 </div>
                             </div>
                         </div>

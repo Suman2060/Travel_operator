@@ -10,10 +10,11 @@ class ItineraryDaySerializer(serializers.ModelSerializer):
 class PackageSerializer(serializers.ModelSerializer):
     itinerary_days = ItineraryDaySerializer(many=True)
     guide_name = serializers.CharField(source='guide.username', read_only=True)
+    guide_phone = serializers.CharField(source='guide.phone_number', read_only=True)
 
     class Meta:
         model = Package
-        fields = ('id', 'title', 'description', 'price', 'duration', 'location', 'image', 'max_travelers', 'guide', 'guide_name', 'itinerary_days', 'created_at')
+        fields = ('id', 'title', 'description', 'price', 'duration', 'location', 'image', 'max_travelers', 'guide', 'guide_name', 'guide_phone', 'itinerary_days', 'created_at')
         read_only_fields = ('guide', 'created_at')
 
     def to_internal_value(self, data):
