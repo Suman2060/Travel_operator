@@ -10,6 +10,7 @@ import {
     Trash2,
     Save,
     X,
+    Users,
     Calendar as CalendarIcon
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -39,6 +40,7 @@ const EditPackage = () => {
 
     useEffect(() => {
         if (!authLoading && (!user || user.role !== 'guide')) {
+            setFetching(false);
             navigate('/login');
             return;
         }
@@ -48,8 +50,10 @@ const EditPackage = () => {
                 const response = await api.get(`/packages/${id}/`);
                 const data = response.data;
 
-                // Security check: Only the guide who created it can edit it
-                if (data.guide !== user.id) {
+                // Use loose equality (==) to handle potential type mismatch
+                // between JWT decoded user_id (number) and API guide field (number)
+                // eslint-disable-next-line eqeqeq
+                if (data.guide != user.id) {
                     navigate('/guide');
                     return;
                 }
