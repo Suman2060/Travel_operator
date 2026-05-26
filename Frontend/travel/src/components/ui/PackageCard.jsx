@@ -7,12 +7,15 @@ const PackageCard = ({ packageData }) => {
     const { id, title, image, price, duration, location } = packageData;
 
     return (
-        <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow">
-            <div className="relative h-48">
+        <Link
+            to={`/package/${id}`}
+            className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow cursor-pointer group no-underline"
+        >
+            <div className="relative h-48 overflow-hidden">
                 <img
                     src={getImageUrl(image) || 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}
                     alt={title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
             </div>
 
@@ -22,7 +25,7 @@ const PackageCard = ({ packageData }) => {
                     {location}
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
                     {title}
                 </h3>
 
@@ -40,15 +43,14 @@ const PackageCard = ({ packageData }) => {
                         </div>
                     </div>
 
-                    <Link
-                        to={`/package/${id}`}
-                        className="bg-gray-900 text-white px-4 py-2 rounded text-sm font-bold hover:bg-blue-600 transition-colors"
+                    <span
+                        className="bg-gray-900 text-white px-4 py-2 rounded text-sm font-bold group-hover:bg-blue-600 transition-colors inline-block"
                     >
                         View Details
-                    </Link>
+                    </span>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 };
 

@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import api from '../lib/api';
+import LoginWelcomePopup from '../components/ui/LoginWelcomePopup';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [loginPopup, setLoginPopup] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -43,6 +45,7 @@ export const AuthProvider = ({ children }) => {
             role: decoded.role
         };
         setUser(userData);
+        setLoginPopup(userData);
         return userData;
     };
 
@@ -58,8 +61,14 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, register, logout, loading, setLoginPopup }}>
             {children}
+            {loginPopup && (
+                <LoginWelcomePopup
+                    user={loginPopup}
+                    onClose={() => setLoginPopup(null)}
+                />
+            )}
         </AuthContext.Provider>
     );
 };

@@ -6,6 +6,7 @@ class ItineraryDaySerializer(serializers.ModelSerializer):
     class Meta:
         model = ItineraryDay
         fields = ('id', 'day_number', 'title', 'description')
+        read_only_fields = ('id',)
 
 class PackageSerializer(serializers.ModelSerializer):
     itinerary_days = ItineraryDaySerializer(many=True)
@@ -33,24 +34,27 @@ class PackageSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
 
     def create(self, validated_data):
-        itinerary_data = validated_data.pop('itinerary_days')
+        itinerary_data = validated_data.pop('itinerary_days', [])
         package = Package.objects.create(**validated_data)
         for day in itinerary_data:
+            day.pop('id', None)
             ItineraryDay.objects.create(package=package, **day)
         return package
 
     def update(self, instance, validated_data):
         itinerary_data = validated_data.pop('itinerary_days', None)
-        
+
         # Update package fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        # Update itinerary (Simple version: clear and recreate)
+        # Update itinerary: clear all existing days and recreate from submitted data
         if itinerary_data is not None:
             instance.itinerary_days.all().delete()
             for day in itinerary_data:
+                # Strip any incoming 'id' so Django creates fresh records
+                day.pop('id', None)
                 ItineraryDay.objects.create(package=instance, **day)
-        
+
         return instance

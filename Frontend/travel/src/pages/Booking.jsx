@@ -23,6 +23,14 @@ const Booking = () => {
         adults: 2,
     });
 
+    const getTodayString = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     useEffect(() => {
         if (!authLoading && !user) {
             navigate('/login');
@@ -51,6 +59,11 @@ const Booking = () => {
 
     const handleCompleteBooking = async () => {
         setError('');
+        const todayStr = getTodayString();
+        if (formData.date < todayStr) {
+            setError('Please select an upcoming date. Past dates are not allowed.');
+            return;
+        }
         setBookingLoading(true);
         try {
             await api.post('/bookings/', {
@@ -132,6 +145,7 @@ const Booking = () => {
                                         <input
                                             type="date"
                                             value={formData.date}
+                                            min={getTodayString()}
                                             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                                             className="w-full p-4 rounded-lg border border-gray-200 outline-none focus:border-blue-600 font-bold text-gray-900"
                                         />
@@ -143,7 +157,7 @@ const Booking = () => {
                                 </div>
                                 <div className="flex justify-end pt-6">
                                     <button
-                                        disabled={!formData.date}
+                                        disabled={!formData.date || formData.date < getTodayString()}
                                         onClick={nextStep}
                                         className="bg-blue-600 text-white px-10 py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-30 transition-all flex items-center gap-2"
                                     >

@@ -117,12 +117,15 @@ class BookingViewSet(viewsets.ModelViewSet):
         """Handle booking cancellation"""
         print(f"Processing cancellation for booking {instance.id}...", flush=True)
         
-        # Create notification for guide
+        # Extract cancellation reason from request body or query parameters
+        reason = self.request.data.get('reason') or self.request.query_params.get('reason') or 'No reason provided.'
+        
+        # Create notification for guide with clarification reason
         Notification.objects.create(
             recipient=instance.package.guide,
             notification_type='booking_cancelled',
             title='Booking Cancelled',
-            message=f'{instance.user.username} cancelled their booking for "{instance.package.title}" on {instance.travel_date}.',
+            message=f'{instance.user.username} cancelled their booking for "{instance.package.title}" on {instance.travel_date}. Reason: {reason}',
             booking=None  # Booking will be deleted
         )
         

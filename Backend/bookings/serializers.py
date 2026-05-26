@@ -1,4 +1,5 @@
 from rest_framework import serializers
+import datetime
 from .models import Booking
 from packages.serializers import PackageSerializer
 
@@ -16,6 +17,12 @@ class BookingSerializer(serializers.ModelSerializer):
         travel_date = data['travel_date']
         package = data['package']
         
+        # Check 0: Is the booking date in the past?
+        if travel_date < datetime.date.today():
+            raise serializers.ValidationError(
+                "You cannot book a trip for a past date. Please select an upcoming date."
+            )
+            
         # Check 1: Is this package already booked for this date?
         # (Only one tour group per package per day)
         existing_package_booking = Booking.objects.filter(
