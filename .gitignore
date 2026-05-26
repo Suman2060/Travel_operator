@@ -24,3 +24,7 @@ Thumbs.db
 .agents/
 .agent/
 .gemini/
+
+# Local helpers and documentation
+run_project.bat
+PROJECT_ARCHITECTURE.md
